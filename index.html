@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17212b">
+<title>Психология для психов</title>
+<style>
+  :root{
+    --bg:#17212b;
+    --card:#232e3c;
+    --text:#ffffff;
+    --muted:#8b9aa8;
+    --accent:#4d9ef7;
+    --danger:#ef6b72;
+    --r:14px;
+    --pad:16px;
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{color-scheme:dark}
+  html,body{margin:0;height:100%}
+
+  body{
+    background:#0e1621;
+    color:var(--text);
+    font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:15px;
+    line-height:1.45;
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .app{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    max-width:420px;
+    height:100dvh;
+    background:var(--bg);
+    overflow:hidden;
+  }
+
+  @media (min-width:480px){
+    body{align-items:center;padding:24px 0}
+    .app{height:844px;max-height:calc(100dvh - 48px);border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.55)}
+  }
+
+  /* ---------- screens ---------- */
+  .screens{
+    flex:1;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    scrollbar-width:none;
+  }
+  .screens::-webkit-scrollbar{display:none}
+
+  .screen{display:none;padding:6px var(--pad) 28px}
+  .screen.active{display:block}
+  .screen[data-screen="lesson"]{padding-top:0;padding-bottom:36px}
+
+  .title{
+    margin:0;
+    font-size:26px;
+    line-height:1.2;
+    letter-spacing:-.02em;
+    font-weight:700;
+  }
+  .subtitle{margin:6px 0 0;color:var(--muted);font-size:14px}
+
+  .section-label{
+    margin:24px 0 10px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ---------- club ---------- */
+  .hero{display:flex;align-items:center;gap:14px;padding:14px 0 20px}
+  .logo{
+    flex:0 0 auto;
+    width:56px;height:56px;
+    border-radius:var(--r);
+    background:linear-gradient(135deg,#4d9ef7,#3a5fc4);
+    display:grid;place-items:center;
+    font-size:19px;font-weight:700;letter-spacing:.02em;
+  }
+  .hero-text{min-width:0}
+  .hero-text h1{
+    margin:0;
+    font-size:21px;
+    line-height:1.25;
+    letter-spacing:-.01em;
+    font-weight:700;
+  }
+  .hero-text p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+
+  .card{
+    background:var(--card);
+    border-radius:var(--r);
+    padding:var(--pad);
+  }
+  .card p{margin:0;font-size:15px;line-height:1.5;color:#e7edf3}
+
+  .chips{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .chip{
+    background:rgba(255,255,255,.06);
+    color:var(--muted);
+    font-size:13px;
+    padding:6px 12px;
+    border-radius:999px;
+  }
+
+  .btn{
+    display:block;
+    width:100%;
+    height:52px;
+    margin-top:16px;
+    border:0;
+    border-radius:var(--r);
+    background:var(--accent);
+    color:#fff;
+    font:inherit;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform .12s ease,opacity .12s ease;
+  }
+  .btn:active{transform:scale(.985);opacity:.9}
+
+  /* ---------- rows ---------- */
+  .list{display:flex;flex-direction:column;gap:8px}
+  .row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+    padding:14px var(--pad);
+    background:var(--card);
+    border:0;
+    border-radius:var(--r);
+    color:inherit;
+    font:inherit;
+    text-align:left;
+    text-decoration:none;
+    cursor:pointer;
+    transition:background .12s ease;
+  }
+  .row:active{background:#283443}
+
+  .row-ico{
+    flex:0 0 auto;
+    width:40px;height:40px;
+    border-radius:12px;
+    background:rgba(255,255,255,.06);
+    color:var(--accent);
+    display:grid;place-items:center;
+  }
+  .row-main{flex:1;min-width:0}
+  .row-title{display:block;font-size:15px;font-weight:500;line-height:1.3}
+  .row-sub{display:block;margin-top:2px;font-size:13px;color:var(--muted)}
+  .chev{flex:0 0 auto;color:#5b6b7c}
+
+  /* ---------- lessons ---------- */
+  .lesson{
+    display:block;
+    width:100%;
+    padding:0;
+    margin:0 0 18px;
+    background:none;
+    border:0;
+    color:inherit;
+    font:inherit;
+    text-align:left;
+    cursor:pointer;
+  }
+  .lesson:last-child{margin-bottom:0}
+
+  .cover{
+    position:relative;
+    aspect-ratio:16/9;
+    border-radius:var(--r);
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .cover::after{
+    content:"";
+    position:absolute;
+    right:-34px;bottom:-52px;
+    width:160px;height:160px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.2);
+    z-index:0;
+  }
+  .cover-1{background-image:radial-gradient(120% 130% at 88% 12%,rgba(255,255,255,.24),rgba(255,255,255,0) 58%),linear-gradient(135deg,#3b6fd4,#6a3fb5)}
+  .cover-2{background-image:radial-gradient(120% 130% at 88% 12%,rgba(255,255,255,.22),rgba(255,255,255,0) 58%),linear-gradient(135deg,#1f7f74,#2b4f8f)}
+  .cover-3{background-image:radial-gradient(120% 130% at 88% 12%,rgba(255,255,255,.22),rgba(255,255,255,0) 58%),linear-gradient(135deg,#8a4160,#3f4f9e)}
+
+  .dur{
+    position:absolute;
+    right:10px;bottom:10px;
+    z-index:1;
+    padding:4px 9px;
+    border-radius:8px;
+    background:rgba(10,16,24,.55);
+    font-size:12px;
+    font-weight:500;
+    color:#fff;
+  }
+
+  .lesson-title{
+    display:block;
+    margin-top:10px;
+    font-size:16px;
+    font-weight:600;
+    line-height:1.35;
+  }
+  .lesson-meta{display:block;margin-top:2px;font-size:13px;color:var(--muted)}
+
+  /* ---------- lesson screen ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:2px;
+    height:56px;
+    margin-left:-10px;
+  }
+  .back{
+    display:grid;
+    place-items:center;
+    width:40px;height:40px;
+    border:0;
+    border-radius:50%;
+    background:none;
+    color:var(--accent);
+    cursor:pointer;
+  }
+  .back:active{background:rgba(255,255,255,.06)}
+  .topbar-title{font-size:15px;font-weight:500;color:var(--muted)}
+
+  .lesson-head{margin-top:16px}
+  .lesson-head h1{
+    margin:0;
+    font-size:23px;
+    line-height:1.25;
+    letter-spacing:-.01em;
+    font-weight:700;
+  }
+  .lesson-head .lesson-meta{margin-top:6px}
+
+  .player{
+    position:relative;
+    aspect-ratio:16/9;
+    margin-top:18px;
+    border-radius:var(--r);
+    background:#000;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+  }
+  .play{
+    display:grid;
+    place-items:center;
+    width:64px;height:64px;
+    border-radius:50%;
+    background:rgba(255,255,255,.14);
+    color:#fff;
+  }
+  .player-note{
+    position:absolute;
+    left:14px;bottom:12px;
+    font-size:12px;
+    color:rgba(255,255,255,.55);
+  }
+
+  .desc{
+    margin:18px 0 0;
+    font-size:15px;
+    line-height:1.6;
+    color:#c9d4df;
+  }
+
+  /* ---------- subscription ---------- */
+  .status-card{margin-top:18px}
+  .status-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:5px 11px 5px 9px;
+    border-radius:999px;
+    background:rgba(77,158,247,.14);
+    color:var(--accent);
+    font-size:13px;
+    font-weight:600;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .status-price{font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .status-price small{font-size:13px;font-weight:500;color:var(--muted)}
+  .status-name{margin-top:12px;font-size:14px;color:var(--muted)}
+
+  .kv{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:15px var(--pad);
+    background:var(--card);
+    border-radius:var(--r);
+  }
+  .kv + .kv{margin-top:8px}
+  .kv-label{font-size:15px}
+  .kv-value{font-size:15px;color:var(--muted);text-align:right}
+
+  .switch{position:relative;display:inline-flex;flex:0 0 auto;cursor:pointer}
+  .switch input{position:absolute;opacity:0;width:0;height:0}
+  .track{
+    display:block;
+    width:48px;height:28px;
+    border-radius:999px;
+    background:#3a4756;
+    transition:background .18s ease;
+  }
+  .track::after{
+    content:"";
+    position:absolute;
+    top:3px;left:3px;
+    width:22px;height:22px;
+    border-radius:50%;
+    background:#fff;
+    transition:transform .18s ease;
+  }
+  .switch input:checked + .track{background:var(--accent)}
+  .switch input:checked + .track::after{transform:translateX(20px)}
+  .switch input:focus-visible + .track{outline:2px solid var(--accent);outline-offset:2px}
+
+  .btn-danger{
+    margin-top:16px;
+    background:rgba(239,107,114,.12);
+    color:var(--danger);
+  }
+  .hint{margin:12px 2px 0;font-size:13px;line-height:1.5;color:var(--muted)}
+
+  /* ---------- tabbar ---------- */
+  .tabbar{
+    flex:0 0 auto;
+    display:flex;
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    background:#1b2634;
+  }
+  .tabbar[hidden]{display:none}
+
+  .tab{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:3px;
+    padding:6px 0 4px;
+    border:0;
+    background:none;
+    color:#6f8093;
+    font:inherit;
+    font-size:10.5px;
+    letter-spacing:.01em;
+    cursor:pointer;
+    transition:color .12s ease;
+  }
+  .tab.active{color:var(--accent)}
+  .tab svg{display:block}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <main class="screens" id="screens">
+
+    <!-- 1. О клубе -->
+    <section class="screen active" data-screen="club">
+      <div class="hero">
+        <div class="logo">ПП</div>
+        <div class="hero-text">
+          <h1>Психология для психов</h1>
+          <p>Закрытый клуб</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <p>Короткие уроки о тревоге, границах и отношениях с собой. Без мотивационных цитат и «просто полюби себя».</p>
+        <div class="chips">
+          <span class="chip">3 урока</span>
+          <span class="chip">3 материала</span>
+          <span class="chip">2500 ₽ / мес</span>
+        </div>
+      </div>
+
+      <button class="btn" data-nav="subscription">Оформить подписку</button>
+
+      <div class="section-label">Связь</div>
+      <div class="list">
+        <a class="row" href="#">
+          <span class="row-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4a1 1 0 0 0 1 1h2l4.5 3.5a.8.8 0 0 0 1.3-.6V6.1a.8.8 0 0 0-1.3-.6L7 9H5a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>
+          </span>
+          <span class="row-main">
+            <span class="row-title">Канал</span>
+            <span class="row-sub">Анонсы и разборы</span>
+          </span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+        <a class="row" href="#">
+          <span class="row-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.4 8.9 8.9 0 0 1-3.6-.8L3 21l1.9-5.3a8.4 8.4 0 1 1 16.1-4.2z"/></svg>
+          </span>
+          <span class="row-main">
+            <span class="row-title">Чат</span>
+            <span class="row-sub">Вопросы и поддержка</span>
+          </span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. Уроки -->
+    <section class="screen" data-screen="lessons">
+      <h1 class="title">Уроки</h1>
+      <p class="subtitle">3 урока · 63 минуты</p>
+
+      <div style="height:18px"></div>
+
+      <button class="lesson" data-lesson="1">
+        <div class="cover cover-1"><span class="dur">18 мин</span></div>
+        <span class="lesson-title">Как устроена тревога</span>
+        <span class="lesson-meta">18 мин</span>
+      </button>
+
+      <button class="lesson" data-lesson="2">
+        <div class="cover cover-2"><span class="dur">24 мин</span></div>
+        <span class="lesson-title">Границы: где мои, где чужие</span>
+        <span class="lesson-meta">24 мин</span>
+      </button>
+
+      <button class="lesson" data-lesson="3">
+        <div class="cover cover-3"><span class="dur">21 мин</span></div>
+        <span class="lesson-title">Что делать с виной</span>
+        <span class="lesson-meta">21 мин</span>
+      </button>
+    </section>
+
+    <!-- 3. Урок -->
+    <section class="screen" data-screen="lesson">
+      <div class="topbar">
+        <button class="back" data-nav="lessons" aria-label="Назад">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <span class="topbar-title">Урок</span>
+      </div>
+
+      <div class="cover cover-1" id="lessonCover"></div>
+
+      <div class="lesson-head">
+        <h1 id="lessonTitle">Как устроена тревога</h1>
+        <span class="lesson-meta" id="lessonMeta">18 мин</span>
+      </div>
+
+      <div class="player">
+        <div class="play">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 5.4v13.2c0 .5.5.8.9.5l10-6.6c.4-.3.4-.9 0-1.1l-10-6.6c-.4-.3-.9 0-.9.6z"/></svg>
+        </div>
+        <span class="player-note">Видео</span>
+      </div>
+
+      <p class="desc" id="lessonDesc">Тревога кажется поломкой, но у неё есть задача. Разбираем, как работает эта система, почему «просто успокойся» не помогает и что с этим можно сделать.</p>
+    </section>
+
+    <!-- 4. Материалы -->
+    <section class="screen" data-screen="materials">
+      <h1 class="title">Материалы</h1>
+      <p class="subtitle">3 файла</p>
+
+      <div style="height:18px"></div>
+
+      <div class="list">
+        <a class="row" href="#">
+          <span class="row-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+          </span>
+          <span class="row-main">
+            <span class="row-title">Дневник тревоги, PDF</span>
+            <span class="row-sub">PDF · 1,2 МБ</span>
+          </span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>
+        </a>
+
+        <a class="row" href="#">
+          <span class="row-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"/><path d="M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0z"/></svg>
+          </span>
+          <span class="row-main">
+            <span class="row-title">Чек-лист: 10 признаков выгорания</span>
+            <span class="row-sub">Чек-лист · 300 КБ</span>
+          </span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>
+        </a>
+
+        <a class="row" href="#">
+          <span class="row-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v-1M8 15V9M12 18V6M16 15V9M20 12v-1"/></svg>
+          </span>
+          <span class="row-main">
+            <span class="row-title">Аудио: дыхание 4-7-8</span>
+            <span class="row-sub">Аудио · 8 МБ</span>
+          </span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- 5. Подписка -->
+    <section class="screen" data-screen="subscription">
+      <h1 class="title">Подписка</h1>
+
+      <div class="card status-card">
+        <div class="status-top">
+          <span class="status-pill"><span class="dot"></span>Активна</span>
+          <span class="status-price">2500 ₽ <small>/ мес</small></span>
+        </div>
+        <div class="status-name">Психология для психов</div>
+      </div>
+
+      <div style="height:8px"></div>
+
+      <div class="kv">
+        <span class="kv-label">Следующее списание</span>
+        <span class="kv-value">12 декабря</span>
+      </div>
+
+      <div class="kv">
+        <span class="kv-label">Автопродление</span>
+        <label class="switch">
+          <input type="checkbox" checked aria-label="Автопродление">
+          <span class="track"></span>
+        </label>
+      </div>
+
+      <button class="btn btn-danger" type="button">Отключить</button>
+      <p class="hint">После отключения доступ к урокам и материалам сохранится до конца оплаченного периода.</p>
+    </section>
+
+  </main>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" data-nav="club">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V19a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/></svg>
+      <span>Клуб</span>
+    </button>
+    <button class="tab" data-nav="lessons">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M10 9.2v5.6l4.6-2.8z"/></svg>
+      <span>Уроки</span>
+    </button>
+    <button class="tab" data-nav="materials">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h6a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span>Материалы</span>
+    </button>
+    <button class="tab" data-nav="subscription">
+      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/></svg>
+      <span>Подписка</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+  var lessons = {
+    1: {
+      title: 'Как устроена тревога',
+      meta: '18 мин',
+      cover: 'cover-1',
+      desc: 'Тревога кажется поломкой, но у неё есть задача. Разбираем, как работает эта система, почему «просто успокойся» не помогает и что с этим можно сделать.'
+    },
+    2: {
+      title: 'Границы: где мои, где чужие',
+      meta: '24 мин',
+      cover: 'cover-2',
+      desc: 'Как отличить заботу от контроля, почему отказывать так тяжело и что делать с неловкостью, которая приходит сразу после «нет».'
+    },
+    3: {
+      title: 'Что делать с виной',
+      meta: '21 мин',
+      cover: 'cover-3',
+      desc: 'Вина за отдых, за отказ, за чужие поступки. Учимся отделять настоящую ответственность от привычки себя казнить.'
+    }
+  };
+
+  var screens = document.querySelectorAll('.screen');
+  var tabs = document.querySelectorAll('.tab');
+  var tabbar = document.getElementById('tabbar');
+  var scroller = document.getElementById('screens');
+
+  function show(name) {
+    screens.forEach(function (s) {
+      s.classList.toggle('active', s.dataset.screen === name);
+    });
+
+    var tabName = name === 'lesson' ? 'lessons' : name;
+    tabs.forEach(function (t) {
+      t.classList.toggle('active', t.dataset.nav === tabName);
+    });
+
+    tabbar.hidden = name === 'lesson';
+    scroller.scrollTop = 0;
+  }
+
+  document.querySelectorAll('[data-nav]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      show(el.dataset.nav);
+    });
+  });
+
+  document.querySelectorAll('[data-lesson]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var data = lessons[el.dataset.lesson];
+      document.getElementById('lessonCover').className = 'cover ' + data.cover;
+      document.getElementById('lessonTitle').textContent = data.title;
+      document.getElementById('lessonMeta').textContent = data.meta;
+      document.getElementById('lessonDesc').textContent = data.desc;
+      show('lesson');
+    });
+  });
+</script>
+
+</body>
+</html>
