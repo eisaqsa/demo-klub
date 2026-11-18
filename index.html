@@ -345,6 +345,51 @@
   }
   .hint{margin:12px 2px 0;font-size:13px;line-height:1.5;color:var(--muted)}
 
+  /* ---------- subscription states ---------- */
+  .sub-state{display:none}
+  .sub-state.active{display:block}
+
+  .status-pill.muted{background:rgba(255,255,255,.07);color:var(--muted)}
+  .status-pill.muted .dot{background:var(--muted)}
+  .status-pill.expired{background:rgba(239,107,114,.14);color:var(--danger)}
+  .status-pill.expired .dot{background:var(--danger)}
+
+  .feats{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    padding:var(--pad);
+    background:var(--card);
+    border-radius:var(--r);
+  }
+  .feat{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.45;color:#dbe4ee}
+  .feat svg{flex:0 0 auto;margin-top:1px;color:var(--accent)}
+
+  .demo-switch{margin-top:28px;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)}
+  .demo-switch-label{
+    display:block;
+    margin-bottom:9px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#5f7183;
+  }
+  .demo-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .demo-chip{
+    border:0;
+    font:inherit;
+    font-size:12.5px;
+    padding:7px 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+    color:var(--muted);
+    cursor:pointer;
+    transition:background .12s ease,color .12s ease;
+  }
+  .demo-chip.on{background:rgba(77,158,247,.16);color:var(--accent)}
+  .demo-chip:active{background:rgba(255,255,255,.1)}
+
   /* ---------- tabbar ---------- */
   .tabbar{
     flex:0 0 auto;
@@ -399,7 +444,7 @@
         </div>
       </div>
 
-      <button class="btn" data-nav="subscription">Оформить подписку</button>
+      <button class="btn" id="clubCta" data-nav="subscription">Оформить подписку</button>
 
       <div class="section-label">Связь</div>
       <div class="list">
@@ -525,31 +570,98 @@
     <section class="screen" data-screen="subscription">
       <h1 class="title">Подписка</h1>
 
-      <div class="card status-card">
-        <div class="status-top">
-          <span class="status-pill"><span class="dot"></span>Активна</span>
-          <span class="status-price">2500 ₽ <small>/ мес</small></span>
+      <!-- до оплаты -->
+      <div class="sub-state active" data-state="none">
+        <div class="card status-card">
+          <div class="status-top">
+            <span class="status-pill muted"><span class="dot"></span>Не оформлена</span>
+            <span class="status-price">2500 ₽ <small>/ мес</small></span>
+          </div>
+          <div class="status-name">Психология для психов</div>
         </div>
-        <div class="status-name">Психология для психов</div>
+
+        <button class="btn" type="button" data-pay>Оплатить</button>
+        <p class="hint">2500 ₽ списываются раз в месяц. Отменить можно в любой момент.</p>
+
+        <div class="section-label">Что входит</div>
+        <div class="feats">
+          <span class="feat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+            3 урока: тревога, границы, вина — 63 минуты
+          </span>
+          <span class="feat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+            Новые уроки каждую неделю
+          </span>
+          <span class="feat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+            Материалы: PDF-дневник, чек-лист, аудиопрактика
+          </span>
+          <span class="feat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>
+            Закрытый канал и чат с участниками
+          </span>
+        </div>
       </div>
 
-      <div style="height:8px"></div>
+      <!-- активна -->
+      <div class="sub-state" data-state="active">
+        <div class="card status-card">
+          <div class="status-top">
+            <span class="status-pill"><span class="dot"></span>Активна</span>
+            <span class="status-price">2500 ₽ <small>/ мес</small></span>
+          </div>
+          <div class="status-name">Психология для психов</div>
+        </div>
 
-      <div class="kv">
-        <span class="kv-label">Следующее списание</span>
-        <span class="kv-value">12 декабря</span>
+        <div style="height:8px"></div>
+
+        <div class="kv">
+          <span class="kv-label">Следующее списание</span>
+          <span class="kv-value">12 декабря</span>
+        </div>
+
+        <div class="kv">
+          <span class="kv-label">Автопродление</span>
+          <label class="switch">
+            <input type="checkbox" checked aria-label="Автопродление">
+            <span class="track"></span>
+          </label>
+        </div>
+
+        <button class="btn btn-danger" type="button" id="cancelBtn">Отключить</button>
+        <p class="hint" id="cancelHint">После отключения доступ к урокам и материалам сохранится до конца оплаченного периода.</p>
       </div>
 
-      <div class="kv">
-        <span class="kv-label">Автопродление</span>
-        <label class="switch">
-          <input type="checkbox" checked aria-label="Автопродление">
-          <span class="track"></span>
-        </label>
+      <!-- закончилась -->
+      <div class="sub-state" data-state="expired">
+        <div class="card status-card">
+          <div class="status-top">
+            <span class="status-pill expired"><span class="dot"></span>Закончилась</span>
+            <span class="status-price">2500 ₽ <small>/ мес</small></span>
+          </div>
+          <div class="status-name">Психология для психов</div>
+        </div>
+
+        <div style="height:8px"></div>
+
+        <div class="kv">
+          <span class="kv-label">Доступ закрыт</span>
+          <span class="kv-value">12 декабря</span>
+        </div>
+
+        <button class="btn" type="button" data-renew>Продлить</button>
+        <p class="hint">Уроки и материалы откроются сразу после оплаты.</p>
       </div>
 
-      <button class="btn btn-danger" type="button">Отключить</button>
-      <p class="hint">После отключения доступ к урокам и материалам сохранится до конца оплаченного периода.</p>
+      <div class="demo-switch">
+        <span class="demo-switch-label">Демо: состояния экрана</span>
+        <div class="demo-chips">
+          <button class="demo-chip" type="button" data-state-set="none">До оплаты</button>
+          <button class="demo-chip" type="button" data-state-set="active">Активна</button>
+          <button class="demo-chip" type="button" data-state-set="expired">Закончилась</button>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -602,6 +714,43 @@
   var tabbar = document.getElementById('tabbar');
   var scroller = document.getElementById('screens');
 
+  /* ---------- состояние подписки (только для демо) ---------- */
+  var subState = 'none';
+  var subStates = document.querySelectorAll('.sub-state');
+  var subChips = document.querySelectorAll('[data-state-set]');
+  var cancelBtn = document.getElementById('cancelBtn');
+  var cancelHint = document.getElementById('cancelHint');
+
+  function setSubState(state) {
+    subState = state;
+    subStates.forEach(function (el) {
+      el.classList.toggle('active', el.dataset.state === state);
+    });
+    subChips.forEach(function (el) {
+      el.classList.toggle('on', el.dataset.stateSet === state);
+    });
+    // кнопка в клубе подстраивается под состояние
+    var cta = document.getElementById('clubCta');
+    if (state === 'none') cta.textContent = 'Оформить подписку';
+    else if (state === 'active') cta.textContent = 'Моя подписка';
+    else cta.textContent = 'Продлить подписку';
+    resetCancel();
+  }
+
+  /* «Отключить» в демо только гасит автопродление — доступ остаётся до конца периода */
+  var defaultHint = 'После отключения доступ к урокам и материалам сохранится до конца оплаченного периода.';
+
+  function resetCancel() {
+    if (!cancelBtn) return;
+    cancelBtn.textContent = 'Отключить';
+    cancelBtn.disabled = false;
+    cancelBtn.style.opacity = '';
+    cancelBtn.style.cursor = '';
+    cancelHint.textContent = defaultHint;
+    var cb = document.querySelector('.switch input');
+    if (cb) cb.checked = true;
+  }
+
   function show(name) {
     screens.forEach(function (s) {
       s.classList.toggle('active', s.dataset.screen === name);
@@ -622,6 +771,36 @@
     });
   });
 
+  document.querySelectorAll('[data-state-set]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      setSubState(el.dataset.stateSet);
+    });
+  });
+
+  document.querySelector('[data-pay]').addEventListener('click', function () {
+    setSubState('active');
+    scroller.scrollTop = 0;
+  });
+
+  document.querySelector('[data-renew]').addEventListener('click', function () {
+    setSubState('active');
+    scroller.scrollTop = 0;
+  });
+
+  /* «Отключить» — только демонстрация: гасит автопродление, доступ остаётся */
+  cancelBtn.addEventListener('click', function () {
+    var cb = document.querySelector('.switch input');
+    var off = cb.checked;
+    cb.checked = !off;
+    if (off) {
+      cancelBtn.textContent = 'Включить автопродление';
+      cancelHint.textContent = 'Доступ сохранится до 12 декабря. Включить продление можно в любой момент.';
+    } else {
+      cancelBtn.textContent = 'Отключить';
+      cancelHint.textContent = defaultHint;
+    }
+  });
+
   document.querySelectorAll('[data-lesson]').forEach(function (el) {
     el.addEventListener('click', function () {
       var data = lessons[el.dataset.lesson];
@@ -632,6 +811,8 @@
       show('lesson');
     });
   });
+
+  setSubState('none');
 </script>
 
 </body>
